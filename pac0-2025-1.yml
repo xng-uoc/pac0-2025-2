@@ -1,0 +1,61 @@
+name: pac0-2025-1
+topology:
+  nodes:
+    vyos01:
+      kind: vyosnetworks_vyos
+      image: ghcr.io/peretuset/vyos:latest
+      mgmt-ipv4: 172.20.20.11
+      labels:
+        graph-icon: router
+    vyos02:
+      kind: vyosnetworks_vyos
+      image: ghcr.io/peretuset/vyos:latest
+      mgmt-ipv4: 172.20.20.12
+      labels:
+        graph-icon: router
+    vyos03:
+      kind: vyosnetworks_vyos
+      image: ghcr.io/peretuset/vyos:latest
+      mgmt-ipv4: 172.20.20.13
+      labels:
+        graph-icon: router
+    host01:
+      kind: linux
+      image: ghcr.io/peretuset/alpine:latest
+      mgmt-ipv4: 172.20.20.21
+      labels:
+        graph-icon: host
+    host02:
+      kind: linux
+      image: ghcr.io/peretuset/alpine:latest
+      mgmt-ipv4: 172.20.20.22
+      labels:
+        graph-icon: host
+    host03:
+      kind: linux
+      image: ghcr.io/peretuset/alpine:latest
+      mgmt-ipv4: 172.20.20.23
+      labels:
+        graph-icon: host
+    ssh:
+      kind: linux
+      image: netreplica/graphite
+      mgmt-ipv4: 172.20.20.100
+      env:
+        CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
+      binds:
+        - __clabDir__/topology-data.json:/htdocs/default/default.json:ro
+        - __clabDir__/ansible-inventory.yml:/htdocs/lab/default/ansible-invento>
+      ports:
+        - 8080:80
+      exec:
+        - sh -c 'graphite_motd.sh 8080'
+      labels:
+        graph-hide: yes
+  links:
+    - endpoints: ["vyos01:eth1", "vyos02:eth1"]
+    - endpoints: ["vyos01:eth2", "vyos03:eth2"]
+    - endpoints: ["vyos01:eth3", "host01:eth1"]
+    - endpoints: ["vyos02:eth2", "vyos03:eth1"]
+    - endpoints: ["vyos02:eth3", "host02:eth1"]
+    - endpoints: ["vyos03:eth3", "host03:eth1"]
