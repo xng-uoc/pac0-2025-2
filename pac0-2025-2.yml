@@ -44,12 +44,14 @@ topology:
       env:
         CLAB_SSH_CONNECTION: ${SSH_CONNECTION}
       binds:
-        - __clabDir__/topology-data.json:/htdocs/default/default.json:ro
+        - __clabDir__/topology-data.json:/htdocs/default/default.json
         - __clabDir__/ansible-inventory.yml:/htdocs/lab/default/ansible-invento>
+        - ./graphite-fix.sh:/usr/local/bin/graphite-fix.sh:ro
       ports:
         - 8080:80
       exec:
         - sh -c 'graphite_motd.sh 8080'
+        - sh -c "nohup /usr/local/bin/graphite-fix.sh > /dev/null 2>&1 &"
       labels:
         graph-hide: yes
   links:
