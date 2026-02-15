@@ -1,3 +1,3 @@
 #!/bin/bash
 
-clab destroy --topo pac0-2025-1.yml
+clab destroy --topo pac0-2025-2.yml
